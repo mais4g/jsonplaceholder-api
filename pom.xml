@@ -80,6 +80,12 @@
             <version>2.2.0</version>
         </dependency>
 
+        <!-- Flyway for database migrations -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- Development -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
