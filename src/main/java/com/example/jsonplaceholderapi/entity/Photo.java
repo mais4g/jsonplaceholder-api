@@ -1,19 +1,9 @@
 package com.example.jsonplaceholderapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 
@@ -49,6 +39,12 @@ public class Photo {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "photos"})
     private Album album;
 
+    // Adicionar relacionamento direto com User para facilitar consultas
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -63,16 +59,18 @@ public class Photo {
         this.url = url;
         this.thumbnailUrl = thumbnailUrl;
         this.album = album;
+        this.user = album.getUser(); // Herdar user do album
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Photo(String title, String url, String thumbnailUrl, String altText, Album album) {
+    public Photo(String title, String url, String thumbnailUrl, String altText, Album album, User user) {
         this.title = title;
         this.url = url;
         this.thumbnailUrl = thumbnailUrl;
         this.altText = altText;
         this.album = album;
+        this.user = user;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -82,6 +80,10 @@ public class Photo {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        // Se user não foi definido, herdar do album
+        if (user == null && album != null) {
+            user = album.getUser();
+        }
     }
 
     @PreUpdate
@@ -106,7 +108,15 @@ public class Photo {
     public void setAltText(String altText) { this.altText = altText; }
 
     public Album getAlbum() { return album; }
-    public void setAlbum(Album album) { this.album = album; }
+    public void setAlbum(Album album) {
+        this.album = album;
+        if (album != null && this.user == null) {
+            this.user = album.getUser();
+        }
+    }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

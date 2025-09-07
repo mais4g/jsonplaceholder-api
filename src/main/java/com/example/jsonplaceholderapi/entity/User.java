@@ -67,7 +67,13 @@ public class User implements UserDetails {
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Album> albums;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Photo> photos;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Todo> todos;
@@ -147,8 +153,14 @@ public class User implements UserDetails {
     public List<Post> getPosts() { return posts; }
     public void setPosts(List<Post> posts) { this.posts = posts; }
 
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
+
     public List<Album> getAlbums() { return albums; }
     public void setAlbums(List<Album> albums) { this.albums = albums; }
+
+    public List<Photo> getPhotos() { return photos; }
+    public void setPhotos(List<Photo> photos) { this.photos = photos; }
 
     public List<Todo> getTodos() { return todos; }
     public void setTodos(List<Todo> todos) { this.todos = todos; }

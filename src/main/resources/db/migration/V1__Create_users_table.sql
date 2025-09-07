@@ -1,3 +1,4 @@
+-- V1__Create_users_table.sql
 CREATE TABLE users (
                        id BIGSERIAL PRIMARY KEY,
                        name VARCHAR(50) NOT NULL,

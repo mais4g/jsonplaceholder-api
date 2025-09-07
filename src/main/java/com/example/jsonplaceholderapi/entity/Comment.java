@@ -1,6 +1,5 @@
 package com.example.jsonplaceholderapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 
@@ -47,6 +47,11 @@ public class Comment {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "comments"})
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -65,11 +70,20 @@ public class Comment {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Comment(String name, String email, String body, Post post, User user) {
+        this.name = name;
+        this.email = email;
+        this.body = body;
+        this.post = post;
+        this.user = user;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     // Lifecycle callbacks
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
@@ -92,6 +106,9 @@ public class Comment {
 
     public Post getPost() { return post; }
     public void setPost(Post post) { this.post = post; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
