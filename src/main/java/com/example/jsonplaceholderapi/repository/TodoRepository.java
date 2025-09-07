@@ -31,6 +31,9 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     // Buscar por título
     List<Todo> findByUserIdAndTitleContainingIgnoreCase(Long userId, String title);
 
+    // Contar todos por usuário
+    long countByUserId(Long userId);
+
     // Contar todos por status
     long countByUserIdAndCompleted(Long userId, Boolean completed);
 
